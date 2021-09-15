@@ -7,11 +7,6 @@ class Motor:
         self.input_one_pin = in1
         self.input_two_pin = in2
 
-        GPIO.setup(in1, GPIO.OUT)
-        GPIO.setup(in2, GPIO.OUT)
-
-        GPIO.output(in1, GPIO.LOW)
-        GPIO.output(in2, GPIO.LOW)
 
         self.pwm = GPIO.PWM(en, 1000)
 
@@ -38,28 +33,30 @@ class Motor:
 
 if __name__ == "__main__":
     EN = 25
+    IN1 = 23
+    IN2 = 24
 
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(EN, GPIO.OUT)
 
-    motor = Motor(in1=24, in2=23, en=EN)
+    GPIO.setup(IN1, GPIO.OUT)
+    GPIO.setup(IN2, GPIO.OUT)
+
+    GPIO.output(IN1, GPIO.LOW)
+    GPIO.output(IN2, GPIO.LOW)
+
+    motor = Motor(IN1, IN2, en=EN)
     motor.start(25)
 
-    try:
-        while 1:
-            sleep(4)
-            print("low")
-            motor.set_speed(25)
+    motor.forward()
 
-            sleep(4)
-            print("med")
-            motor.set_speed(50)
+    speed = 0
+    while speed < 100:
+        motor.set_speed(speed)
 
-            sleep(4)
-            print("high")
-            motor.set_speed(75)
+        speed += 1
+        sleep(0.2)
 
-    except KeyboardInterrupt:
-        motor.end()
+    motor.end()
 
 
