@@ -45,14 +45,21 @@ if __name__ == "__main__":
     motor = Motor(in1=24, in2=23, en=EN)
     motor.start(25)
 
-    while 1:
-        sleep(4)
-        motor.set_speed(25)
+    try:
+        while 1:
+            sleep(4)
+            print("low")
+            motor.set_speed(25)
 
-        sleep(4)
-        motor.set_speed(50)
+            sleep(4)
+            print("med")
+            motor.set_speed(50)
 
-        sleep(4)
-        motor.set_speed(75)
+            sleep(4)
+            print("high")
+            motor.set_speed(75)
+
+    except KeyboardInterrupt:
+        motor.end()
 
 
