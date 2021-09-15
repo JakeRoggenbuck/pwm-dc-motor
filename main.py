@@ -3,12 +3,11 @@ from time import sleep
 
 
 class Motor:
-    def __init__(self, in1: int, in2: int, en: int):
+    def __init__(self, in1: int, in2: int, en: int, freq: int):
         self.input_one_pin = in1
         self.input_two_pin = in2
 
-
-        self.pwm = GPIO.PWM(en, 1000)
+        self.pwm = GPIO.PWM(en, freq)
 
     def command(self, one_state: GPIO, two_state: GPIO):
         GPIO.output(self.input_one_pin, one_state)
@@ -26,8 +25,11 @@ class Motor:
     def start(self, x):
         self.pwm.start(x)
 
-    @staticmethod
-    def end():
+    def stop(self):
+        self.pwm.stop()
+
+    def end(self):
+        self.stop()
         GPIO.cleanup()
 
 
@@ -45,18 +47,16 @@ if __name__ == "__main__":
     GPIO.output(IN1, GPIO.LOW)
     GPIO.output(IN2, GPIO.LOW)
 
-    motor = Motor(IN1, IN2, en=EN)
-    motor.start(25)
+    motor = Motor(IN1, IN2, en=EN, freq=1)
 
     motor.forward()
 
-    speed = 0
-    while speed < 100:
-        motor.set_speed(speed)
+    try:
+        motor.start(100)
+        sleep(10)
 
-        speed += 1
-        sleep(0.2)
+        motor.end()
 
-    motor.end()
-
+    except KeyboardInterrupt:
+        motor.end()
 
